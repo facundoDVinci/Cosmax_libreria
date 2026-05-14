@@ -20,5 +20,6 @@ from . import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.vista_index, name='indice')
+    path('', views.login_view, name='login'),
+     path('index/',views.vista_index ,name='vista_index'),
 ]

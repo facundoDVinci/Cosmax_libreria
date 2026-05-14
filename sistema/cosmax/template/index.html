@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmax</title>
+</head>
+<body>
+    <h1>Cosmax</h1>
+
+<h3>Bienvenido {{ request.user.username }}</h3>
+
+<nav>
+
+    <a href="#">Ventas</a>
+    <a href="#">Stock</a>
+    <a href="#">Clientes</a>
+
+    {% if request.user.rol == 'admin' %}
+        <a href="#">Usuarios</a>
+    {% endif %}
+
+    <a href="#">Cerrar sesión</a>
+
+</nav>
+
+<hr>
+
+<h2>Panel principal</h2>
+
+{% if request.user.rol == 'admin' %}
+    <p>Vista Administrador</p>
+{% else %}
+    <p>Vista Empleado</p>
+{% endif %}
+
+</body>
+</html>
