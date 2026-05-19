@@ -23,3 +23,13 @@ class Usuario(AbstractUser):
 
     def es_empleado(self):
         return self.rol == self.EMPLEADO
+    
+class Libro(models.Model):
+
+    titulo = models.CharField(max_length=200)
+    autor = models.CharField(max_length=100)
+    precio = models.DecimalField(max_digits=5, decimal_places=2)
+    stock = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.titulo

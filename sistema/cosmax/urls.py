@@ -21,5 +21,10 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.login_view, name='login'),
-     path('index/',views.vista_index ,name='vista_index'),
+    path('index/', views.vista_index ,name='vista_index'),
+    path('catalogo/', views.catalogo, name='catalogo'),
+    path('catalogo/agregar/', views.agregar_libro, name='agregar_libro'),
+    path('catalogo/editar/<int:libro_id>/', views.editar_libro, name='editar_libro'),
+    path('catalogo/eliminar/<int:libro_id>/', views.eliminar_libro, name='eliminar_libro'),
+
 ]

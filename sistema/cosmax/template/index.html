@@ -48,7 +48,7 @@
 
         <h3 class="text-center py-4">COSMAX</h3>
 
-        <a href="#">Libros</a>
+        <a href="{% url 'catalogo' %}">Libros</a>
         <a href="#">Stock</a>
         <a href="#">Ventas</a>
         <a href="#">Clientes</a>
@@ -69,7 +69,7 @@
             <div class="col-md-3">
                 <div class="card dashboard p-4">
                     <h5>Total de Libros</h5>
-                    <h2>0</h2>
+                    <h2>{{ total_libros }}</h2>
                 </div>
             </div>
 
