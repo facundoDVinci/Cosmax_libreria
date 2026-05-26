@@ -48,12 +48,12 @@
 
         <h3 class="text-center py-4">COSMAX</h3>
 
-        <a href="{% url 'catalogo' %}">Libros</a>
-        <a href="#">Stock</a>
-        <a href="#">Ventas</a>
-        <a href="#">Clientes</a>
-        <a href="#">Usuarios</a>
-        <a href="#">Cerrar sesión</a>
+            <a href="{% url 'vista_index' %}">Home</a>
+            <a href="{% url 'catalogo' %}">Libros</a>
+            <a href="{% url 'stock' %}">Inventario</a>
+            <a href="#">Ventas</a>
+            <a href="#">Clientes</a>
+            <a href="#">Usuarios</a>
 
     </div>
 
@@ -76,7 +76,7 @@
             <div class="col-md-3">
                 <div class="card dashboard p-4">
                     <h5>Unidades en stock</h5>
-                    <h2>0</h2>
+                    <h2>{{ unidades_stock }}</h2>
                 </div>
             </div>
 
@@ -90,7 +90,7 @@
             <div class="col-md-3">
                 <div class="card dashboard p-4">
                     <h5>Libros con stock bajo</h5>
-                    <h2>0</h2>
+                    <h2>{{ stock_bajo }}</h2>
                 </div>
             </div>
 

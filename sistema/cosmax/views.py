@@ -92,28 +92,58 @@ def editar_libro(request, libro_id):
         libro.titulo = request.POST['titulo']
         libro.autor = request.POST['autor']
         libro.precio = request.POST['precio']
-        libro.stock = request.POST['stock']
 
         libro.save()
 
         return redirect('catalogo')
 
-    return render(
-        request,
-        'editar_libro.html',
-        {'libro': libro}
-    )
+    return render(request, 'editar_libro.html', {'libro': libro})
 
 
 @login_required
 def eliminar_libro(request, libro_id):
 
-    libro = get_object_or_404(
-        Libro,
-        id=libro_id
-    )
+    libro = get_object_or_404(Libro, id=libro_id)
 
     libro.delete()
 
     return redirect('catalogo')
+
+
+@login_required
+def stock(request):
+
+    busqueda = request.GET.get('buscar', '')
+
+    libros = Libro.objects.filter(titulo__icontains=busqueda)
+
+    total_unidades = sum(libro.stock for libro in Libro.objects.all())
+
+    stock_bajo = Libro.objects.filter(stock__lte=5).count()
+
+    sin_stock = Libro.objects.filter(stock=0).count()
+
+    contexto = {
+        'libros': libros,
+        'busqueda': busqueda,
+        'total_unidades': total_unidades,
+        'stock_bajo': stock_bajo,
+        'sin_stock': sin_stock
+    }
+
+    return render(request, 'stock.html', contexto)
+
+
+@login_required
+def ajustar_stock(request, libro_id):
+
+    libro = get_object_or_404(Libro, id=libro_id)
+
+    if request.method == 'POST':
+
+        libro.stock = request.POST['stock']
+        libro.save()
+
+    return redirect('stock')
+
 

@@ -26,5 +26,8 @@ urlpatterns = [
     path('catalogo/agregar/', views.agregar_libro, name='agregar_libro'),
     path('catalogo/editar/<int:libro_id>/', views.editar_libro, name='editar_libro'),
     path('catalogo/eliminar/<int:libro_id>/', views.eliminar_libro, name='eliminar_libro'),
+    path('inventario/', views.stock, name='stock'),
+    path('inventario/ajustar/<int:libro_id>/', views.ajustar_stock, name='ajustar_stock'),
+
 
 ]
