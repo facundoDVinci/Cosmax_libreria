@@ -1,9 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Libro
+from .models import Libro, Cliente
+from .singleton import ConfiguracionSistema 
 
 def login_view(request):
+
+    config = ConfiguracionSistema()
+
+    nombre_sistema = config.NOMBRE_SISTEMA
+
+    contexto = {
+        'nombre_sistema': nombre_sistema
+    }
 
     if request.method == 'POST':
 
@@ -20,25 +29,33 @@ def login_view(request):
             login(request, usuario)
             return redirect('vista_index')
 
-    return render(request, 'login.html')
+    return render(request, 'login.html', contexto)
 
 
 @login_required
 def vista_index(request):
+    config = ConfiguracionSistema()
+
     total_libros = Libro.objects.count()
+
+    total_clientes = Cliente.objects.count()
 
     unidades_stock = sum(
         libro.stock for libro in Libro.objects.all()
     )
 
+    nombre_sistema = config.NOMBRE_SISTEMA
+
     stock_bajo = Libro.objects.filter(
-        stock__lte=3
+        stock__lte=config.STOCK_BAJO
     ).count()
 
     contexto = {
         'total_libros': total_libros,
+        'total_clientes': total_clientes,
         'unidades_stock': unidades_stock,
-        'stock_bajo': stock_bajo
+        'stock_bajo': stock_bajo,
+        'nombre_sistema': nombre_sistema
     }
 
     return render(request, 'index.html', contexto)
@@ -113,13 +130,17 @@ def eliminar_libro(request, libro_id):
 @login_required
 def stock(request):
 
+    config = ConfiguracionSistema()
+
+    nombre_sistema = config.NOMBRE_SISTEMA
+
     busqueda = request.GET.get('buscar', '')
 
     libros = Libro.objects.filter(titulo__icontains=busqueda)
 
     total_unidades = sum(libro.stock for libro in Libro.objects.all())
 
-    stock_bajo = Libro.objects.filter(stock__lte=5).count()
+    stock_bajo = Libro.objects.filter(stock__lte=config.STOCK_BAJO).count()
 
     sin_stock = Libro.objects.filter(stock=0).count()
 
@@ -128,7 +149,8 @@ def stock(request):
         'busqueda': busqueda,
         'total_unidades': total_unidades,
         'stock_bajo': stock_bajo,
-        'sin_stock': sin_stock
+        'sin_stock': sin_stock,
+        'nombre_sistema': nombre_sistema
     }
 
     return render(request, 'stock.html', contexto)

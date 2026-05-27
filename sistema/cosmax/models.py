@@ -33,3 +33,29 @@ class Libro(models.Model):
 
     def __str__(self):
         return self.titulo
+
+class Cliente(models.Model):
+
+    nombre = models.CharField(max_length=100)
+    apellido = models.CharField(max_length=100)
+    email = models.EmailField(max_length=100)
+    telefono = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.nombre} {self.apellido}"
+    
+class Venta(models.Model):
+
+    cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
+
+    empleado = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
+
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+
+    def __str__(self):
+
+        return f"Venta #{self.id}"
+   
+

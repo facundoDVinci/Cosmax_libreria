@@ -46,7 +46,7 @@
     
     <div class="sidebar text-white">
 
-        <h3 class="text-center py-4">COSMAX</h3>
+        <h3 class="text-center py-4">{{nombre_sistema}}</h3>
 
             <a href="{% url 'vista_index' %}">Home</a>
             <a href="{% url 'catalogo' %}">Libros</a>
@@ -83,7 +83,7 @@
             <div class="col-md-3">
                 <div class="card dashboard p-4">
                     <h5>Clientes</h5>
-                    <h2>0</h2>
+                    <h2>{{ total_clientes }}</h2>
                 </div>
             </div>
 
