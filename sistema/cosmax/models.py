@@ -46,6 +46,12 @@ class Cliente(models.Model):
     
 class Venta(models.Model):
 
+    METODOS_PAGO = [
+        ('EFECTIVO', 'Efectivo'),
+        ('TARJETA', 'Tarjeta'),
+        ('TRANSFERENCIA', 'Transferencia')
+    ]
+
     cliente = models.ForeignKey(Cliente, on_delete=models.SET_NULL, null=True)
 
     empleado = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
@@ -54,8 +60,33 @@ class Venta(models.Model):
 
     total = models.DecimalField(max_digits=10, decimal_places=2, default=0)
 
+    metodo_pago = models.CharField(max_length=20, choices=METODOS_PAGO, default='EFECTIVO')
+
     def __str__(self):
 
         return f"Venta #{self.id}"
+    
+class DetalleVenta(models.Model):
+
+    venta = models.ForeignKey(
+        Venta,
+        on_delete=models.CASCADE
+    )
+
+    libro = models.ForeignKey(
+        Libro,
+        on_delete=models.CASCADE
+    )
+
+    cantidad = models.PositiveIntegerField(default=1)
+
+    subtotal = models.DecimalField(
+        max_digits=10,
+        decimal_places=2
+    )
+
+    def __str__(self):
+
+        return f"{self.libro.titulo}"
    
 

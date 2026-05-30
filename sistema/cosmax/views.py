@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Libro, Cliente
+from .models import Libro, Cliente, Venta, DetalleVenta
 from .singleton import ConfiguracionSistema 
 
 def login_view(request):
@@ -167,5 +167,48 @@ def ajustar_stock(request, libro_id):
         libro.save()
 
     return redirect('stock')
+
+@login_required
+def venta(request):
+
+    busqueda = request.GET.get('buscar','')
+
+    ventas = Venta.objects.filter(cliente__nombre__icontains=busqueda).order_by('-fecha')
+
+    contexto = {'ventas': ventas,'clientes': Cliente.objects.all(),'libros': Libro.objects.filter(stock__gt=0)}
+
+    return render(request,'venta.html', contexto)
+
+@login_required
+def agregar_venta(request):
+
+    if request.method == 'POST':
+
+        cliente = Cliente.objects.get(id=request.POST['cliente']
+        )
+
+        libro = Libro.objects.get(id=request.POST['libro'])
+
+        cantidad = int(request.POST['cantidad'])
+
+        metodo_pago = request.POST['metodo_pago']
+
+        if cantidad <= 0:
+            return redirect('venta')
+
+        if libro.stock < cantidad:
+            return redirect('venta')
+
+        subtotal = libro.precio * cantidad
+
+        venta = Venta.objects.create(cliente=cliente, empleado=request.user, metodo_pago=metodo_pago, total=subtotal)
+
+        DetalleVenta.objects.create(venta=venta, libro=libro, cantidad=cantidad, subtotal=subtotal)
+
+        libro.stock -= cantidad
+
+        libro.save()
+
+    return redirect('venta')
 
 
