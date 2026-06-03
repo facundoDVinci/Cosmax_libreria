@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: May 20, 2026 at 05:49 PM
+-- Generation Time: Jun 03, 2026 at 06:28 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -29,8 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `auth_group` (
   `id` int NOT NULL,
-  `name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `name` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -42,7 +42,7 @@ CREATE TABLE `auth_group_permissions` (
   `id` bigint NOT NULL,
   `group_id` int NOT NULL,
   `permission_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -52,10 +52,10 @@ CREATE TABLE `auth_group_permissions` (
 
 CREATE TABLE `auth_permission` (
   `id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) NOT NULL,
   `content_type_id` int NOT NULL,
-  `codename` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `codename` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `auth_permission`
@@ -82,14 +82,61 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (18, 'Can change session', 5, 'change_session'),
 (19, 'Can delete session', 5, 'delete_session'),
 (20, 'Can view session', 5, 'view_session'),
-(21, 'Can add libro', 6, 'add_libro'),
-(22, 'Can change libro', 6, 'change_libro'),
-(23, 'Can delete libro', 6, 'delete_libro'),
-(24, 'Can view libro', 6, 'view_libro'),
-(25, 'Can add user', 7, 'add_usuario'),
-(26, 'Can change user', 7, 'change_usuario'),
-(27, 'Can delete user', 7, 'delete_usuario'),
-(28, 'Can view user', 7, 'view_usuario');
+(21, 'Can add cliente', 6, 'add_cliente'),
+(22, 'Can change cliente', 6, 'change_cliente'),
+(23, 'Can delete cliente', 6, 'delete_cliente'),
+(24, 'Can view cliente', 6, 'view_cliente'),
+(25, 'Can add libro', 8, 'add_libro'),
+(26, 'Can change libro', 8, 'change_libro'),
+(27, 'Can delete libro', 8, 'delete_libro'),
+(28, 'Can view libro', 8, 'view_libro'),
+(29, 'Can add user', 9, 'add_usuario'),
+(30, 'Can change user', 9, 'change_usuario'),
+(31, 'Can delete user', 9, 'delete_usuario'),
+(32, 'Can view user', 9, 'view_usuario'),
+(33, 'Can add venta', 10, 'add_venta'),
+(34, 'Can change venta', 10, 'change_venta'),
+(35, 'Can delete venta', 10, 'delete_venta'),
+(36, 'Can view venta', 10, 'view_venta'),
+(37, 'Can add detalle venta', 7, 'add_detalleventa'),
+(38, 'Can change detalle venta', 7, 'change_detalleventa'),
+(39, 'Can delete detalle venta', 7, 'delete_detalleventa'),
+(40, 'Can view detalle venta', 7, 'view_detalleventa');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cosmax_cliente`
+--
+
+CREATE TABLE `cosmax_cliente` (
+  `id` bigint NOT NULL,
+  `nombre` varchar(100) NOT NULL,
+  `apellido` varchar(100) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `telefono` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `cosmax_cliente`
+--
+
+INSERT INTO `cosmax_cliente` (`id`, `nombre`, `apellido`, `email`, `telefono`) VALUES
+(1, 'Cliente', 'Apellido', 'Cliente@gmail.com', '23435645');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cosmax_detalleventa`
+--
+
+CREATE TABLE `cosmax_detalleventa` (
+  `id` bigint NOT NULL,
+  `cantidad` int UNSIGNED NOT NULL,
+  `subtotal` decimal(10,2) NOT NULL,
+  `libro_id` bigint NOT NULL,
+  `venta_id` bigint NOT NULL
+) ;
 
 -- --------------------------------------------------------
 
@@ -99,8 +146,8 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 
 CREATE TABLE `cosmax_libro` (
   `id` bigint NOT NULL,
-  `titulo` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `autor` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `titulo` varchar(200) NOT NULL,
+  `autor` varchar(100) NOT NULL,
   `precio` decimal(5,2) NOT NULL,
   `stock` int UNSIGNED NOT NULL
 ) ;
@@ -113,25 +160,25 @@ CREATE TABLE `cosmax_libro` (
 
 CREATE TABLE `cosmax_usuario` (
   `id` bigint NOT NULL,
-  `password` varchar(128) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(128) NOT NULL,
   `last_login` datetime(6) DEFAULT NULL,
   `is_superuser` tinyint(1) NOT NULL,
-  `username` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `first_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `last_name` varchar(150) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(254) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `username` varchar(150) NOT NULL,
+  `first_name` varchar(150) NOT NULL,
+  `last_name` varchar(150) NOT NULL,
+  `email` varchar(254) NOT NULL,
   `is_staff` tinyint(1) NOT NULL,
   `is_active` tinyint(1) NOT NULL,
   `date_joined` datetime(6) NOT NULL,
-  `rol` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `rol` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `cosmax_usuario`
 --
 
 INSERT INTO `cosmax_usuario` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `rol`) VALUES
-(1, 'pbkdf2_sha256$1200000$W0EHz9eH2JtoU4hcyWMRIR$iWRni8DTXAEGeTlrm9VYTlaFCJpqiwi1caEC/iPq2BY=', '2026-05-20 17:46:20.129039', 1, 'leonardo', '', '', 'leo@gmail.com', 1, 1, '2026-05-20 17:45:17.875543', 'empleado');
+(1, 'pbkdf2_sha256$1200000$AKvCEOGDkjzaYnkpwGlz1X$VYutCcQIouK9XDJg/EEXYKkGCLlfb+4FGkG6j1DVBOI=', '2026-06-03 17:22:39.372251', 1, 'leonardo', '', '', 'leo@gmail.com', 1, 1, '2026-06-03 17:22:18.266661', 'empleado');
 
 -- --------------------------------------------------------
 
@@ -143,7 +190,7 @@ CREATE TABLE `cosmax_usuario_groups` (
   `id` bigint NOT NULL,
   `usuario_id` bigint NOT NULL,
   `group_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -155,7 +202,22 @@ CREATE TABLE `cosmax_usuario_user_permissions` (
   `id` bigint NOT NULL,
   `usuario_id` bigint NOT NULL,
   `permission_id` int NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `cosmax_venta`
+--
+
+CREATE TABLE `cosmax_venta` (
+  `id` bigint NOT NULL,
+  `fecha` datetime(6) NOT NULL,
+  `total` decimal(10,2) NOT NULL,
+  `metodo_pago` varchar(20) NOT NULL,
+  `cliente_id` bigint DEFAULT NULL,
+  `empleado_id` bigint DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -166,10 +228,10 @@ CREATE TABLE `cosmax_usuario_user_permissions` (
 CREATE TABLE `django_admin_log` (
   `id` int NOT NULL,
   `action_time` datetime(6) NOT NULL,
-  `object_id` longtext COLLATE utf8mb4_unicode_ci,
-  `object_repr` varchar(200) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `object_id` longtext,
+  `object_repr` varchar(200) NOT NULL,
   `action_flag` smallint UNSIGNED NOT NULL,
-  `change_message` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `change_message` longtext NOT NULL,
   `content_type_id` int DEFAULT NULL,
   `user_id` bigint NOT NULL
 ) ;
@@ -182,9 +244,9 @@ CREATE TABLE `django_admin_log` (
 
 CREATE TABLE `django_content_type` (
   `id` int NOT NULL,
-  `app_label` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `model` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `app_label` varchar(100) NOT NULL,
+  `model` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_content_type`
@@ -195,8 +257,11 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (2, 'auth', 'group'),
 (3, 'auth', 'permission'),
 (4, 'contenttypes', 'contenttype'),
-(6, 'cosmax', 'libro'),
-(7, 'cosmax', 'usuario'),
+(6, 'cosmax', 'cliente'),
+(7, 'cosmax', 'detalleventa'),
+(8, 'cosmax', 'libro'),
+(9, 'cosmax', 'usuario'),
+(10, 'cosmax', 'venta'),
 (5, 'sessions', 'session');
 
 -- --------------------------------------------------------
@@ -207,35 +272,35 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 
 CREATE TABLE `django_migrations` (
   `id` bigint NOT NULL,
-  `app` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `app` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_migrations`
 --
 
 INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
-(1, 'contenttypes', '0001_initial', '2026-05-20 17:42:47.078464'),
-(2, 'contenttypes', '0002_remove_content_type_name', '2026-05-20 17:42:47.157102'),
-(3, 'auth', '0001_initial', '2026-05-20 17:42:47.535128'),
-(4, 'auth', '0002_alter_permission_name_max_length', '2026-05-20 17:42:47.622699'),
-(5, 'auth', '0003_alter_user_email_max_length', '2026-05-20 17:42:47.633314'),
-(6, 'auth', '0004_alter_user_username_opts', '2026-05-20 17:42:47.642963'),
-(7, 'auth', '0005_alter_user_last_login_null', '2026-05-20 17:42:47.650914'),
-(8, 'auth', '0006_require_contenttypes_0002', '2026-05-20 17:42:47.655304'),
-(9, 'auth', '0007_alter_validators_add_error_messages', '2026-05-20 17:42:47.663730'),
-(10, 'auth', '0008_alter_user_username_max_length', '2026-05-20 17:42:47.671361'),
-(11, 'auth', '0009_alter_user_last_name_max_length', '2026-05-20 17:42:47.679825'),
-(12, 'auth', '0010_alter_group_name_max_length', '2026-05-20 17:42:47.704203'),
-(13, 'auth', '0011_update_proxy_permissions', '2026-05-20 17:42:47.713210'),
-(14, 'auth', '0012_alter_user_first_name_max_length', '2026-05-20 17:42:47.720913'),
-(15, 'cosmax', '0001_initial', '2026-05-20 17:42:48.159495'),
-(16, 'admin', '0001_initial', '2026-05-20 17:42:48.346176'),
-(17, 'admin', '0002_logentry_remove_auto_add', '2026-05-20 17:42:48.356141'),
-(18, 'admin', '0003_logentry_add_action_flag_choices', '2026-05-20 17:42:48.367690'),
-(19, 'sessions', '0001_initial', '2026-05-20 17:42:48.418620');
+(1, 'contenttypes', '0001_initial', '2026-06-03 17:21:30.006833'),
+(2, 'contenttypes', '0002_remove_content_type_name', '2026-06-03 17:21:30.216543'),
+(3, 'auth', '0001_initial', '2026-06-03 17:21:30.540507'),
+(4, 'auth', '0002_alter_permission_name_max_length', '2026-06-03 17:21:30.618894'),
+(5, 'auth', '0003_alter_user_email_max_length', '2026-06-03 17:21:30.628462'),
+(6, 'auth', '0004_alter_user_username_opts', '2026-06-03 17:21:30.638545'),
+(7, 'auth', '0005_alter_user_last_login_null', '2026-06-03 17:21:30.646220'),
+(8, 'auth', '0006_require_contenttypes_0002', '2026-06-03 17:21:30.650994'),
+(9, 'auth', '0007_alter_validators_add_error_messages', '2026-06-03 17:21:30.660161'),
+(10, 'auth', '0008_alter_user_username_max_length', '2026-06-03 17:21:30.669546'),
+(11, 'auth', '0009_alter_user_last_name_max_length', '2026-06-03 17:21:30.680326'),
+(12, 'auth', '0010_alter_group_name_max_length', '2026-06-03 17:21:30.705567'),
+(13, 'auth', '0011_update_proxy_permissions', '2026-06-03 17:21:30.713536'),
+(14, 'auth', '0012_alter_user_first_name_max_length', '2026-06-03 17:21:30.721523'),
+(15, 'cosmax', '0001_initial', '2026-06-03 17:21:31.503584'),
+(16, 'admin', '0001_initial', '2026-06-03 17:21:31.689526'),
+(17, 'admin', '0002_logentry_remove_auto_add', '2026-06-03 17:21:31.701606'),
+(18, 'admin', '0003_logentry_add_action_flag_choices', '2026-06-03 17:21:31.712924'),
+(19, 'sessions', '0001_initial', '2026-06-03 17:21:31.761848');
 
 -- --------------------------------------------------------
 
@@ -244,17 +309,17 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 --
 
 CREATE TABLE `django_session` (
-  `session_key` varchar(40) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `session_data` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `session_key` varchar(40) NOT NULL,
+  `session_data` longtext NOT NULL,
   `expire_date` datetime(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_session`
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('ochp9qpy9j0vq15378z3s116lbdw4j4w', '.eJxVjDEOwjAMAP_iGUWJDWnSkZ03RHHs0gJKpaadEH9HlTrAene6N6S8rWPami5pEujBwemXcS5PrbuQR6732ZS5rsvEZk_MYZu5zaKv69H-DcbcRuiBvKBEx0RFcRiCogvWMwdGjpdObRR1UawtxFrIKRVERi85d0hngc8X73c4SQ:1wPkzs:7pYYrGPSQMlPQlyoMNB6xiFE3hoCWBJDpwF8KVh6LHk', '2026-06-03 17:46:20.138263');
+('pcvwnqf1r63sjveumu0w03lsrphut4oh', '.eJxVjLsOwjAMAP_FM4rqJmnSjux8Q2THDimgVupjQvw7qtQB1rvTvSHRvtW0r7qkUWAAhMsvY8pPnQ4hD5rus8nztC0jmyMxp13NbRZ9Xc_2b1BprTCASlRynZKKD-yaGF2rXbZCTStSLHsJ2DMSMgdsvA0YsGDpHWbno8LnCwUqOCc:1wUpId:DrS9htKVEdLYfy38sxF7CFfYN1t-AN-3M0W8_GkkxOE', '2026-06-17 17:22:39.383035');
 
 --
 -- Indexes for dumped tables
@@ -281,6 +346,20 @@ ALTER TABLE `auth_group_permissions`
 ALTER TABLE `auth_permission`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`);
+
+--
+-- Indexes for table `cosmax_cliente`
+--
+ALTER TABLE `cosmax_cliente`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `cosmax_detalleventa`
+--
+ALTER TABLE `cosmax_detalleventa`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cosmax_detalleventa_libro_id_7f75d38f_fk_cosmax_libro_id` (`libro_id`),
+  ADD KEY `cosmax_detalleventa_venta_id_884179fe_fk_cosmax_venta_id` (`venta_id`);
 
 --
 -- Indexes for table `cosmax_libro`
@@ -310,6 +389,14 @@ ALTER TABLE `cosmax_usuario_user_permissions`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `cosmax_usuario_user_perm_usuario_id_permission_id_65673564_uniq` (`usuario_id`,`permission_id`),
   ADD KEY `cosmax_usuario_user__permission_id_996db64f_fk_auth_perm` (`permission_id`);
+
+--
+-- Indexes for table `cosmax_venta`
+--
+ALTER TABLE `cosmax_venta`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `cosmax_venta_cliente_id_137a356c_fk_cosmax_cliente_id` (`cliente_id`),
+  ADD KEY `cosmax_venta_empleado_id_183fc9ea_fk_cosmax_usuario_id` (`empleado_id`);
 
 --
 -- Indexes for table `django_admin_log`
@@ -359,7 +446,19 @@ ALTER TABLE `auth_group_permissions`
 -- AUTO_INCREMENT for table `auth_permission`
 --
 ALTER TABLE `auth_permission`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
+
+--
+-- AUTO_INCREMENT for table `cosmax_cliente`
+--
+ALTER TABLE `cosmax_cliente`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `cosmax_detalleventa`
+--
+ALTER TABLE `cosmax_detalleventa`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `cosmax_libro`
@@ -386,6 +485,12 @@ ALTER TABLE `cosmax_usuario_user_permissions`
   MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `cosmax_venta`
+--
+ALTER TABLE `cosmax_venta`
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
@@ -395,7 +500,7 @@ ALTER TABLE `django_admin_log`
 -- AUTO_INCREMENT for table `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT for table `django_migrations`
@@ -421,6 +526,13 @@ ALTER TABLE `auth_permission`
   ADD CONSTRAINT `auth_permission_content_type_id_2f476e4b_fk_django_co` FOREIGN KEY (`content_type_id`) REFERENCES `django_content_type` (`id`);
 
 --
+-- Constraints for table `cosmax_detalleventa`
+--
+ALTER TABLE `cosmax_detalleventa`
+  ADD CONSTRAINT `cosmax_detalleventa_libro_id_7f75d38f_fk_cosmax_libro_id` FOREIGN KEY (`libro_id`) REFERENCES `cosmax_libro` (`id`),
+  ADD CONSTRAINT `cosmax_detalleventa_venta_id_884179fe_fk_cosmax_venta_id` FOREIGN KEY (`venta_id`) REFERENCES `cosmax_venta` (`id`);
+
+--
 -- Constraints for table `cosmax_usuario_groups`
 --
 ALTER TABLE `cosmax_usuario_groups`
@@ -433,6 +545,13 @@ ALTER TABLE `cosmax_usuario_groups`
 ALTER TABLE `cosmax_usuario_user_permissions`
   ADD CONSTRAINT `cosmax_usuario_user__permission_id_996db64f_fk_auth_perm` FOREIGN KEY (`permission_id`) REFERENCES `auth_permission` (`id`),
   ADD CONSTRAINT `cosmax_usuario_user__usuario_id_65730c9e_fk_cosmax_us` FOREIGN KEY (`usuario_id`) REFERENCES `cosmax_usuario` (`id`);
+
+--
+-- Constraints for table `cosmax_venta`
+--
+ALTER TABLE `cosmax_venta`
+  ADD CONSTRAINT `cosmax_venta_cliente_id_137a356c_fk_cosmax_cliente_id` FOREIGN KEY (`cliente_id`) REFERENCES `cosmax_cliente` (`id`),
+  ADD CONSTRAINT `cosmax_venta_empleado_id_183fc9ea_fk_cosmax_usuario_id` FOREIGN KEY (`empleado_id`) REFERENCES `cosmax_usuario` (`id`);
 
 --
 -- Constraints for table `django_admin_log`

@@ -68,22 +68,13 @@ class Venta(models.Model):
     
 class DetalleVenta(models.Model):
 
-    venta = models.ForeignKey(
-        Venta,
-        on_delete=models.CASCADE
-    )
+    venta = models.ForeignKey(Venta, on_delete=models.CASCADE)
 
-    libro = models.ForeignKey(
-        Libro,
-        on_delete=models.CASCADE
-    )
+    libro = models.ForeignKey(Libro, on_delete=models.CASCADE)
 
     cantidad = models.PositiveIntegerField(default=1)
 
-    subtotal = models.DecimalField(
-        max_digits=10,
-        decimal_places=2
-    )
+    subtotal = models.DecimalField(max_digits=10, decimal_places=2)
 
     def __str__(self):
 

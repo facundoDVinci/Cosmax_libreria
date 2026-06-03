@@ -30,6 +30,8 @@ urlpatterns = [
     path('inventario/ajustar/<int:libro_id>/', views.ajustar_stock, name='ajustar_stock'),
     path('venta/', views.venta, name='venta'),
     path('venta/agregar/', views.agregar_venta, name='agregar_venta'),
+    path('cliente/', views.cliente, name='cliente'),
+    path('cliente/agregar', views.registrar_cliente, name='registrar_cliente'),
 
 
 ]

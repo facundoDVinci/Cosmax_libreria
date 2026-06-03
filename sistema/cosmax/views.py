@@ -211,4 +211,46 @@ def agregar_venta(request):
 
     return redirect('venta')
 
+@login_required
+def cliente(request):
+
+    config = ConfiguracionSistema()
+
+    nombre = Cliente.nombre
+
+    apellido = Cliente.apellido
+
+    email = Cliente.email
+
+    telefono = Cliente.telefono
+
+    nombre_sistema = config.NOMBRE_SISTEMA
+
+    contexto = {
+        'nombre': nombre,
+        'apellido': apellido,
+        'email': email,
+        'telefono': telefono,
+        'nombre_sistema': nombre_sistema
+    }
+
+    return render(request, 'cliente.html', contexto)
+
+def registrar_cliente(request):
+
+    if request.method == "POST":
+
+        Cliente.objects.create(
+            nombre=request.POST['nombre'],
+            apellido=request.POST['apellido'],
+            email=request.POST['email'],
+            telefono=request.POST['telefono']
+        )
+
+        return redirect('cliente')
+
+    
+
+    
+
 
