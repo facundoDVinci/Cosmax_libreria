@@ -1,8 +1,9 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from .models import Libro, Cliente, Venta, DetalleVenta
+from .models import Libro, Cliente, Venta, DetalleVenta, Usuario
 from .singleton import ConfiguracionSistema 
+from django.contrib.auth.hashers import make_password
 
 def login_view(request):
 
@@ -236,6 +237,7 @@ def cliente(request):
 
     return render(request, 'cliente.html', contexto)
 
+@login_required
 def registrar_cliente(request):
 
     if request.method == "POST":
@@ -249,8 +251,74 @@ def registrar_cliente(request):
 
         return redirect('cliente')
 
-    
+@login_required
+def usuarios(request):
 
+    busqueda = request.GET.get('buscar', '')
+
+    usuarios = Usuario.objects.filter(username__icontains=busqueda)
+
+    contexto = {
+
+        'usuarios': usuarios,
+
+        'total_usuarios': Usuario.objects.count(),
+
+        'admins': Usuario.objects.filter(rol='ADMIN').count(),
+
+        'empleados': Usuario.objects.filter(rol='EMPLEADO').count(),
+
+        'busqueda': busqueda
+
+    }
+
+    return render(request, 'usuario.html',contexto)
+
+    
+@login_required
+def agregar_usuario(request):
+
+    if request.method == 'POST':
+
+        Usuario.objects.create(
+
+            username=request.POST['username'],
+
+            email=request.POST['email'],
+
+            rol=request.POST['rol'],
+
+            password=make_password(request.POST['password'])
+
+        )
+
+    return redirect('usuario')
+
+@login_required
+def editar_usuario(request, usuario_id):
+
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    if request.method == 'POST':
+
+        usuario.email = request.POST['email']
+
+        usuario.rol = request.POST['rol']
+
+        usuario.save()
+
+    return redirect('usuario')
+
+@login_required
+def eliminar_usuario(request, usuario_id):
+
+    usuario = get_object_or_404(Usuario, id=usuario_id)
+
+    if usuario != request.user:
+
+        usuario.delete()
+
+    return redirect('usuario')
     
 
 
