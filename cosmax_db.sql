@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Jun 03, 2026 at 06:28 PM
+-- Generation Time: Jun 09, 2026 at 08:00 PM
 -- Server version: 8.4.3
 -- PHP Version: 8.3.26
 
@@ -136,7 +136,14 @@ CREATE TABLE `cosmax_detalleventa` (
   `subtotal` decimal(10,2) NOT NULL,
   `libro_id` bigint NOT NULL,
   `venta_id` bigint NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `cosmax_detalleventa`
+--
+
+INSERT INTO `cosmax_detalleventa` (`id`, `cantidad`, `subtotal`, `libro_id`, `venta_id`) VALUES
+(1, 1, 30.00, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -150,7 +157,16 @@ CREATE TABLE `cosmax_libro` (
   `autor` varchar(100) NOT NULL,
   `precio` decimal(5,2) NOT NULL,
   `stock` int UNSIGNED NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `cosmax_libro`
+--
+
+INSERT INTO `cosmax_libro` (`id`, `titulo`, `autor`, `precio`, `stock`) VALUES
+(1, 'El Señor de los Anillos', 'J.R.R. Tolkien', 20.00, 20),
+(2, 'Ulises', 'James Joyce', 30.00, 4),
+(3, 'La Divina Comedia', 'Dante Alighieri', 20.00, 25);
 
 -- --------------------------------------------------------
 
@@ -178,7 +194,7 @@ CREATE TABLE `cosmax_usuario` (
 --
 
 INSERT INTO `cosmax_usuario` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`, `rol`) VALUES
-(1, 'pbkdf2_sha256$1200000$AKvCEOGDkjzaYnkpwGlz1X$VYutCcQIouK9XDJg/EEXYKkGCLlfb+4FGkG6j1DVBOI=', '2026-06-03 17:22:39.372251', 1, 'leonardo', '', '', 'leo@gmail.com', 1, 1, '2026-06-03 17:22:18.266661', 'empleado');
+(1, 'pbkdf2_sha256$1200000$AKvCEOGDkjzaYnkpwGlz1X$VYutCcQIouK9XDJg/EEXYKkGCLlfb+4FGkG6j1DVBOI=', '2026-06-09 19:37:27.980984', 1, 'leonardo', '', '', 'leo@gmail.com', 1, 1, '2026-06-03 17:22:18.266661', 'empleado');
 
 -- --------------------------------------------------------
 
@@ -219,6 +235,13 @@ CREATE TABLE `cosmax_venta` (
   `empleado_id` bigint DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+--
+-- Dumping data for table `cosmax_venta`
+--
+
+INSERT INTO `cosmax_venta` (`id`, `fecha`, `total`, `metodo_pago`, `cliente_id`, `empleado_id`) VALUES
+(1, '2026-06-09 19:42:02.147199', 30.00, 'EFECTIVO', 1, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -234,7 +257,7 @@ CREATE TABLE `django_admin_log` (
   `change_message` longtext NOT NULL,
   `content_type_id` int DEFAULT NULL,
   `user_id` bigint NOT NULL
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -319,6 +342,7 @@ CREATE TABLE `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('bnfwqdbvwdmzccbthj8wsde0faqflvqz', '.eJxVjLsOwjAMAP_FM4rqJmnSjux8Q2THDimgVupjQvw7qtQB1rvTvSHRvtW0r7qkUWAAhMsvY8pPnQ4hD5rus8nztC0jmyMxp13NbRZ9Xc_2b1BprTCASlRynZKKD-yaGF2rXbZCTStSLHsJ2DMSMgdsvA0YsGDpHWbno8LnCwUqOCc:1wX2GO:W4twI-C5DQEOJ33pe9v03iHsBjECuyMY8apvM807D8A', '2026-06-23 19:37:28.503251'),
 ('pcvwnqf1r63sjveumu0w03lsrphut4oh', '.eJxVjLsOwjAMAP_FM4rqJmnSjux8Q2THDimgVupjQvw7qtQB1rvTvSHRvtW0r7qkUWAAhMsvY8pPnQ4hD5rus8nztC0jmyMxp13NbRZ9Xc_2b1BprTCASlRynZKKD-yaGF2rXbZCTStSLHsJ2DMSMgdsvA0YsGDpHWbno8LnCwUqOCc:1wUpId:DrS9htKVEdLYfy38sxF7CFfYN1t-AN-3M0W8_GkkxOE', '2026-06-17 17:22:39.383035');
 
 --
@@ -458,13 +482,13 @@ ALTER TABLE `cosmax_cliente`
 -- AUTO_INCREMENT for table `cosmax_detalleventa`
 --
 ALTER TABLE `cosmax_detalleventa`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `cosmax_libro`
 --
 ALTER TABLE `cosmax_libro`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `cosmax_usuario`
@@ -488,7 +512,7 @@ ALTER TABLE `cosmax_usuario_user_permissions`
 -- AUTO_INCREMENT for table `cosmax_venta`
 --
 ALTER TABLE `cosmax_venta`
-  MODIFY `id` bigint NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `django_admin_log`

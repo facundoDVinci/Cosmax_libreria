@@ -143,7 +143,7 @@ def stock(request):
 
     stock_bajo = Libro.objects.filter(stock__lte=config.STOCK_BAJO).count()
 
-    sin_stock = Libro.objects.filter(stock=0).count()
+    sin_stock = Libro.objects.filter(stock=config.SIN_STOCK).count()
 
     contexto = {
         'libros': libros,
@@ -171,12 +171,20 @@ def ajustar_stock(request, libro_id):
 
 @login_required
 def venta(request):
+    config = ConfiguracionSistema()
+
+    nombre_sistema = config.NOMBRE_SISTEMA
 
     busqueda = request.GET.get('buscar','')
 
     ventas = Venta.objects.filter(cliente__nombre__icontains=busqueda).order_by('-fecha')
 
-    contexto = {'ventas': ventas,'clientes': Cliente.objects.all(),'libros': Libro.objects.filter(stock__gt=0)}
+    contexto = {
+        'ventas': ventas,
+        'clientes': Cliente.objects.all(),
+        'libros': Libro.objects.filter(stock__gt=config.SIN_STOCK),
+        'nombre_sistema': nombre_sistema
+        }
 
     return render(request,'venta.html', contexto)
 
@@ -260,21 +268,21 @@ def registrar_cliente(request):
 @login_required
 def usuarios(request):
 
+    config = ConfiguracionSistema()
+
+    nombre_sistema = config.NOMBRE_SISTEMA
+
     busqueda = request.GET.get('buscar', '')
 
     usuarios = Usuario.objects.filter(username__icontains=busqueda)
 
     contexto = {
-
         'usuarios': usuarios,
-
         'total_usuarios': Usuario.objects.count(),
-
         'admins': Usuario.objects.filter(rol='ADMIN').count(),
-
         'empleados': Usuario.objects.filter(rol='EMPLEADO').count(),
-
-        'busqueda': busqueda
+        'busqueda': busqueda,
+        'nombre_sistema': nombre_sistema
 
     }
 
