@@ -217,6 +217,10 @@ def cliente(request):
 
     config = ConfiguracionSistema()
 
+    busqueda = request.GET.get('buscar','')
+
+    clientes = Cliente.objects.all()
+
     nombre = Cliente.nombre
 
     apellido = Cliente.apellido
@@ -228,7 +232,9 @@ def cliente(request):
     nombre_sistema = config.NOMBRE_SISTEMA
 
     contexto = {
+        'clientes': clientes,
         'nombre': nombre,
+        'busqueda': busqueda,
         'apellido': apellido,
         'email': email,
         'telefono': telefono,
