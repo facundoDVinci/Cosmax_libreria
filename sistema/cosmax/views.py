@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from .models import Libro, Cliente, Venta, DetalleVenta, Usuario
 from .singleton import ConfiguracionSistema 
 from django.contrib.auth.hashers import make_password
+from decimal import Decimal, InvalidOperation
 
 def login_view(request):
 
@@ -64,18 +66,22 @@ def vista_index(request):
 @login_required
 def catalogo(request):
 
+    config = ConfiguracionSistema()
+
+    modal_abierto = request.session.pop("modal_abierto", None)
+
     busqueda = request.GET.get('buscar', '')
 
     libros = Libro.objects.filter(
         titulo__icontains=busqueda
     )
-
-    return render(
-        request,
-        'catalogo.html',
+    nombre_sistema = config.NOMBRE_SISTEMA
+    return render(request, 'catalogo.html',
         {
             'libros': libros,
-            'busqueda': busqueda
+            'busqueda': busqueda,
+            'nombre_sistema': nombre_sistema,
+            "modal_abierto": modal_abierto
         }
     )
 
@@ -85,37 +91,94 @@ def agregar_libro(request):
 
     if request.method == 'POST':
 
+        titulo = request.POST['titulo'].strip()
+        autor = request.POST['autor'].strip()
+
+        try:
+            precio = Decimal(request.POST['precio'])
+        except (InvalidOperation, ValueError):
+            messages.error(request, "El precio debe ser un número válido.")
+            request.session["modal_abierto"] = "Agregar"
+            return redirect('catalogo')
+
+        stock = int(request.POST['stock'])
+
+        if len(titulo) < 5:
+            messages.error(request, "El título debe tener al menos 5 caracteres.")
+            request.session["modal_abierto"] = "Agregar"
+            return redirect('catalogo')
+
+        if len(autor) < 3:
+            messages.error(request, "El nombre del autor debe tener al menos 3 caracteres.")
+            request.session["modal_abierto"] = "Agregar"
+            return redirect('catalogo')
+
+        if precio <= 0:
+            messages.error(request, "El precio debe ser mayor que 0.")
+            request.session["modal_abierto"] = "Agregar"
+            return redirect('catalogo')
+
+        if stock < 0:
+            messages.error(request, "El stock no puede ser negativo.")
+            request.session["modal_abierto"] = "Agregar"
+            return redirect('catalogo')
+
         Libro.objects.create(
-            titulo=request.POST['titulo'],
-            autor=request.POST['autor'],
-            precio=request.POST['precio'],
-            stock=request.POST['stock']
+            titulo=titulo,
+            autor=autor,
+            precio=precio,
+            stock=stock
         )
+
+        messages.success(request, "Libro agregado correctamente.")
 
         return redirect('catalogo')
 
-    return render(request, 'agregar_libro.html')
+    return redirect('catalogo')
 
 
 @login_required
 def editar_libro(request, libro_id):
 
-    libro = get_object_or_404(
-        Libro,
-        id=libro_id
-    )
+    libro = get_object_or_404(Libro, id=libro_id)
 
     if request.method == 'POST':
 
-        libro.titulo = request.POST['titulo']
-        libro.autor = request.POST['autor']
-        libro.precio = request.POST['precio']
+        titulo = request.POST['titulo'].strip()
+        autor = request.POST['autor'].strip()
 
+        try:
+            precio = Decimal(request.POST['precio'])
+        except (InvalidOperation, ValueError):
+            messages.error(request, "El precio debe ser un número válido.")
+            request.session["modal_abierto"] = f"Editar{libro.id}"
+            return redirect('catalogo')
+
+        if len(titulo) < 5:
+            messages.error(request, "El título debe tener al menos 5 caracteres.")
+            request.session["modal_abierto"] = f"Editar{libro.id}"
+            return redirect('catalogo')
+
+        if len(autor) < 3:
+            messages.error(request, "El autor debe tener al menos 3 caracteres.")
+            request.session["modal_abierto"] = f"Editar{libro.id}"
+            return redirect('catalogo')
+
+        if precio <= 0:
+            messages.error(request, "El precio debe ser mayor que 0.")
+            request.session["modal_abierto"] = f"Editar{libro.id}"
+            return redirect('catalogo')
+
+        libro.titulo = titulo
+        libro.autor = autor
+        libro.precio = precio
         libro.save()
+
+        messages.success(request, "Libro editado correctamente.")
 
         return redirect('catalogo')
 
-    return render(request, 'editar_libro.html', {'libro': libro})
+    return redirect('catalogo')
 
 
 @login_required
@@ -132,6 +195,8 @@ def eliminar_libro(request, libro_id):
 def stock(request):
 
     config = ConfiguracionSistema()
+
+    modal_abierto = request.session.pop("modal_abierto", None)
 
     nombre_sistema = config.NOMBRE_SISTEMA
 
@@ -151,7 +216,8 @@ def stock(request):
         'total_unidades': total_unidades,
         'stock_bajo': stock_bajo,
         'sin_stock': sin_stock,
-        'nombre_sistema': nombre_sistema
+        'nombre_sistema': nombre_sistema,
+        'modal_abierto': modal_abierto
     }
 
     return render(request, 'stock.html', contexto)
@@ -164,7 +230,12 @@ def ajustar_stock(request, libro_id):
 
     if request.method == 'POST':
 
-        libro.stock = request.POST['stock']
+        libro.stock = int(request.POST['stock'])
+        if libro.stock < 0:
+            messages.error(request, "El stock no puede ser negativo.")
+            request.session["modal_abierto"] = f"stock{{ libro.id }}"
+            return redirect('stock')
+        
         libro.save()
 
     return redirect('stock')
@@ -175,6 +246,8 @@ def venta(request):
 
     nombre_sistema = config.NOMBRE_SISTEMA
 
+    modal_abierto = request.session.pop("modal_abierto", None)
+
     busqueda = request.GET.get('buscar','')
 
     ventas = Venta.objects.filter(cliente__nombre__icontains=busqueda).order_by('-fecha')
@@ -183,7 +256,8 @@ def venta(request):
         'ventas': ventas,
         'clientes': Cliente.objects.all(),
         'libros': Libro.objects.filter(stock__gt=config.SIN_STOCK),
-        'nombre_sistema': nombre_sistema
+        'nombre_sistema': nombre_sistema,
+        'modal_abierto': modal_abierto
         }
 
     return render(request,'venta.html', contexto)
@@ -203,9 +277,13 @@ def agregar_venta(request):
         metodo_pago = request.POST['metodo_pago']
 
         if cantidad <= 0:
+            messages.error(request, "La cantidad debe ser mayor que 0.")
+            request.session["modal_abierto"] = "nuevaVenta"
             return redirect('venta')
 
         if libro.stock < cantidad:
+            messages.error(request, "No hay suficiente stock disponible.")
+            request.session["modal_abierto"] = "nuevaVenta"
             return redirect('venta')
 
         subtotal = libro.precio * cantidad
@@ -224,6 +302,8 @@ def agregar_venta(request):
 def cliente(request):
 
     config = ConfiguracionSistema()
+
+    modal_abierto = request.session.pop("modal_abierto", None)
 
     busqueda = request.GET.get('buscar','')
 
@@ -246,7 +326,8 @@ def cliente(request):
         'apellido': apellido,
         'email': email,
         'telefono': telefono,
-        'nombre_sistema': nombre_sistema
+        'nombre_sistema': nombre_sistema,
+        'modal_abierto': modal_abierto
     }
 
     return render(request, 'cliente.html', contexto)
@@ -256,11 +337,36 @@ def registrar_cliente(request):
 
     if request.method == "POST":
 
+        nombre=request.POST['nombre'].strip()
+        apellido=request.POST['apellido'].strip()
+        email=request.POST['email'].strip()
+        telefono=request.POST['telefono'].strip()
+
+        if len(nombre) == 0:
+            messages.error(request, "El nombre no puede estar vacío.")
+            request.session["modal_abierto"] = "nuevoCliente"
+            return redirect('cliente')
+        
+        if len(apellido) == 0:
+            messages.error(request, "El apellido no puede estar vacío.")
+            request.session["modal_abierto"] = "nuevoCliente"
+            return redirect('cliente')
+        
+        if len(telefono) == 0:
+            messages.error(request, "El teléfono no puede estar vacío.")
+            request.session["modal_abierto"] = "nuevoCliente"
+            return redirect('cliente')
+        
+        if len(telefono) != 10:
+            messages.error(request, "El teléfono debe tener 10 dígitos.")
+            request.session["modal_abierto"] = "nuevoCliente"
+            return redirect('cliente') 
+
         Cliente.objects.create(
-            nombre=request.POST['nombre'],
-            apellido=request.POST['apellido'],
-            email=request.POST['email'],
-            telefono=request.POST['telefono']
+            nombre=nombre,
+            apellido=apellido,
+            email=email,
+            telefono=telefono
         )
 
         return redirect('cliente')
