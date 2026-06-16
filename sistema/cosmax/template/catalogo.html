@@ -20,8 +20,6 @@
             --oro:          #c79a56;   /* acento dorado para signature */
             --linea:        #e7ddcf;   /* líneas/bordes sutiles */
             --texto-suave:  #8a7b6c;   /* texto secundario */
-            --ok:           #6f8f5a;
-            --warn:         #c2664a;
 
             --radius: 14px;
             --sidebar-w: 240px;
@@ -176,16 +174,17 @@
                 <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 19v-1a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v1M14 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 12v-1a4 4 0 0 0-3-3.87M16.5 3.13A4 4 0 0 1 19 7a4 4 0 0 1-2.5 3.87"/></svg>
                 <span>Clientes</span>
             </a>
-
+        {% if request.user.rol == 'ADMIN' %}
             <div class="sidebar-section">Sistema</div>
             <a href="{% url 'usuario' %}">
                 <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path stroke-linecap="round" stroke-linejoin="round" d="M4 21v-1a6 6 0 0 1 6-6h4a6 6 0 0 1 6 6v1"/></svg>
                 <span>Usuarios</span>
             </a>
+        {% endif %}
         </div>
 
         <div class="sidebar-footer">
-            <a href="#">
+            <a href="{% url 'cerrar_sesion' %}">
                 <svg fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3m5 14 5-5-5-5m5 5H9"/></svg>
                 <span>Cerrar sesión</span>
             </a>
@@ -194,7 +193,7 @@
     </nav>
         
     <div class="container mt-5">
-
+        
         <div class="d-flex justify-content-between mb-4">
             <h2>Catálogo de Libros</h2>
             <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#Agregar">Añadir Libro</button>
@@ -236,13 +235,13 @@
                 <td>{{ libro.autor }}</td>
                 <td>${{ libro.precio }}</td>
                 <td>{{ libro.stock }}</td>
-
+                
                 <td>
+                    
+                        <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Editar{{ libro.id }}">Editar</button>
 
-                    <button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#Editar{{ libro.id }}">Editar</button>
-
-                    <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#Eliminar{{ libro.id }}">Eliminar</button>
-
+                        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#Eliminar{{ libro.id }}">Eliminar</button>
+                
                 </td>
 
             </tr>

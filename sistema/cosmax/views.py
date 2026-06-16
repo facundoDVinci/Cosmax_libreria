@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from .models import Libro, Cliente, Venta, DetalleVenta, Usuario
 from .singleton import ConfiguracionSistema 
@@ -378,6 +378,8 @@ def usuarios(request):
 
     nombre_sistema = config.NOMBRE_SISTEMA
 
+    modal_abierto = request.session.pop("modal_abierto", None)
+
     busqueda = request.GET.get('buscar', '')
 
     usuarios = Usuario.objects.filter(username__icontains=busqueda)
@@ -388,7 +390,8 @@ def usuarios(request):
         'admins': Usuario.objects.filter(rol='ADMIN').count(),
         'empleados': Usuario.objects.filter(rol='EMPLEADO').count(),
         'busqueda': busqueda,
-        'nombre_sistema': nombre_sistema
+        'nombre_sistema': nombre_sistema,
+        'modal_abierto': modal_abierto
 
     }
 
@@ -400,15 +403,34 @@ def agregar_usuario(request):
 
     if request.method == 'POST':
 
+        username=request.POST['username'].strip()
+        password=request.POST['password'].strip()
+
+        if len(username) == 0:
+            messages.error(request, "El nombre de usuario no puede estar vacío.")
+            request.session["modal_abierto"] = "AgregarUsuario"
+            return redirect('usuario')
+        
+        if len(password) == 0:
+            messages.error(request, "La contraseña no puede estar vacía.")
+            request.session["modal_abierto"] = "AgregarUsuario"
+            return redirect('usuario')
+        
+        if len(password) < 8 :
+            messages.error(request, "La contraseña debe tener al menos 8 caracteres")
+            request.session["modal_abierto"] = "AgregarUsuario"
+            return redirect('usuario')
+        
+        
         Usuario.objects.create(
 
-            username=request.POST['username'],
+            username=username,
 
             email=request.POST['email'],
 
             rol=request.POST['rol'],
 
-            password=make_password(request.POST['password'])
+            password=make_password(password)
 
         )
 
@@ -439,6 +461,10 @@ def eliminar_usuario(request, usuario_id):
         usuario.delete()
 
     return redirect('usuario')
+
+def cerrar_sesion(request):
+    logout(request)
+    return redirect('login')
     
 
 
