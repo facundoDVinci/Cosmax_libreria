@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
-from .models import Libro, Cliente, Venta, DetalleVenta, Usuario
+from .models.models import Libro, Cliente, Venta, DetalleVenta, Usuario
 from .singleton import ConfiguracionSistema 
 from django.contrib.auth.hashers import make_password
 from decimal import Decimal, InvalidOperation
